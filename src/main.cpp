@@ -4,7 +4,7 @@ int main() {
   // Flush after every std::cout / std:cerr
   std::cout << std::unitbuf;
   std::cerr << std::unitbuf;
-
+  while (1){
   // Uncomment this block to pass the first stage
   std::cout << "$ ";
 
@@ -12,4 +12,5 @@ int main() {
   std::getline(std::cin, input);
   
   std::cout << input << ": command not found" << std::endl;
+  }
 }
