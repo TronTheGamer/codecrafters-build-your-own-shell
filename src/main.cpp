@@ -35,7 +35,7 @@ int main() {
   else if(_cmd == "type"){
     while (_str >> _arg){
       
-   if (std::find(commands.begin(), commands.end(), _arg) != commands.end()) {
+   if (std::find(commands.begin(), commands.end(), _arg) != commands.end()){
                       std::cout << _arg << " is a shell builtin" << std::endl;
                   } else {
                       std::cout << _arg << ": not found" << std::endl;
