@@ -26,7 +26,8 @@ int main() {
       std::cout << _arg << " ";
     }
     std::cout << std::endl;
-  }
+  }else if(_cmd != ""){
   std::cout << input << ": command not found" << std::endl;
   }
+}
 }
