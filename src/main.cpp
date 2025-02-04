@@ -141,7 +141,11 @@ int main()
     else if(_cmd == "cd"){
       if(args.size() == 1){
         chdir(getenv("HOME"));
-      }else{
+      }
+      else if(access(args[1].c_str(), F_OK) == -1){
+        std::cout << "cd: " << args[1] << ": No such file or directory" << std::endl;
+      }
+      else{
         chdir(args[1].c_str());
       }
     }
