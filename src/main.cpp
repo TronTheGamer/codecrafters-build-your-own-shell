@@ -8,7 +8,7 @@
 #include <sys/stat.h> // For stat
 
 // List of built-in commands
-std::vector<std::string> commands = {"echo", "exit", "type"};
+std::vector<std::string> commands = {"echo", "exit", "type", "pwd"};
 
 // Check if the file is executable
 bool is_executable(const std::string &path)
