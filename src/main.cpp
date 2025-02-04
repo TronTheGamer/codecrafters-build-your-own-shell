@@ -8,7 +8,7 @@
 #include <sys/stat.h> // For stat
 
 // List of built-in commands
-std::vector<std::string> commands = {"echo", "exit", "type", "pwd"};
+std::vector<std::string> commands = {"echo", "exit", "type", "pwd","cd"};
 
 // Check if the file is executable
 bool is_executable(const std::string &path)
@@ -137,6 +137,13 @@ int main()
         std::cout << cwd << std::endl;
       else
         perror("getcwd() error");
+    }
+    else if(_cmd == "cd"){
+      if(args.size() == 1){
+        chdir(getenv("HOME"));
+      }else{
+        chdir(args[1].c_str());
+      }
     }
     else
     {
