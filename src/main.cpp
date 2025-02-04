@@ -142,6 +142,11 @@ int main()
       if(args.size() == 1){
         chdir(getenv("HOME"));
       }
+      // check if the directory is ~
+      else if(args[1] == "~"){
+        chdir(getenv("HOME"));
+      }
+      // Check if the directory exists
       else if(access(args[1].c_str(), F_OK) == -1){
         std::cout << "cd: " << args[1] << ": No such file or directory" << std::endl;
       }
