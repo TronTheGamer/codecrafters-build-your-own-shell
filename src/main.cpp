@@ -1,13 +1,39 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
-#include <algorithm> // For std::find
+#include <algorithm>  // For std::find
+#include <cstdlib>    // For getenv
+#include <unistd.h>   // For access()
+#include <sys/stat.h> // For stat
+#include <cstring>    // For strtok
 
 // List of built-in commands
 std::vector<std::string> commands = {"echo", "exit", "type"};
 
+// Function to check if a file is executable
+bool is_executable(const std::string &path) {
+    return access(path.c_str(), X_OK) == 0;
+}
+
+// Function to search for an executable in PATH directories
+std::string find_in_path(const std::string &command) {
+    char *path_env = getenv("PATH"); // Get the PATH environment variable
+    if (!path_env) return "";        // If PATH is not set, return empty
+
+    std::string path_str(path_env);
+    std::stringstream ss(path_str);
+    std::string dir;
+
+    while (std::getline(ss, dir, ':')) { // Split PATH by ':'
+        std::string full_path = dir + "/" + command;
+        if (is_executable(full_path)) {
+            return full_path; // Found the executable
+        }
+    }
+    return ""; // Not found
+}
+
 int main() {
-    // Flush after every std::cout / std::cerr
     std::cout << std::unitbuf;
     std::cerr << std::unitbuf;
 
@@ -26,29 +52,34 @@ int main() {
             break; // Exit the shell
         } 
         else if (_cmd == "echo") {
-            // Echo the arguments
             while (_str >> _arg) {
                 std::cout << _arg << " ";
             }
             std::cout << std::endl;
         } 
         else if (_cmd == "type") {
-            // Check each argument after 'type'
             while (_str >> _arg) {
-                // Check if the argument is a known built-in command
+                // 1. Check if it's a built-in command
                 if (std::find(commands.begin(), commands.end(), _arg) != commands.end()) {
                     std::cout << _arg << " is a shell builtin" << std::endl;
-                } else {
-                    std::cout << _arg << ": not found" << std::endl;
+                } 
+                // 2. Search in PATH for executable
+                else {
+                    std::string path = find_in_path(_arg);
+                    if (!path.empty()) {
+                        std::cout << _arg << " is " << path << std::endl;
+                    } 
+                    // 3. If not found
+                    else {
+                        std::cout << _arg << ": not found" << std::endl;
+                    }
                 }
             }
         } 
         else if (!_cmd.empty()) {
-            // Handle unrecognized commands
             std::cout << input << ": command not found" << std::endl;
         }
     }
 
     return 0;
 }
-
