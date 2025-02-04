@@ -138,7 +138,7 @@ int main()
       if (!path.empty())
       {
         // Replace the command with its full path
-        // args[0] = path;
+        // args[0] = path;                        // Since the command is in the $PATH, no need to replace
         execute_external_command(args);
       }
       else
