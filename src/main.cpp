@@ -95,4 +95,32 @@ int main() {
             for (size_t i = 1; i < args.size(); ++i) {
                 std::string &arg = args[i];
                 if (std::find(commands.begin(), commands.end(), arg) != commands.end()) {
-                    std::c
+                    std::cout << arg << " is a shell builtin" << std::endl;
+                } 
+                else {
+                    std::string path = find_in_path(arg);
+                    if (!path.empty()) {
+                        std::cout << arg << " is " << path << std::endl;
+                    } 
+                    else {
+                        std::cout << arg << ": not found" << std::endl;
+                    }
+                }
+            }
+        } 
+        else {
+            // Check if it's an external command
+            std::string path = find_in_path(_cmd);
+            if (!path.empty()) {
+                // Replace the command with its full path
+                args[0] = path;
+                execute_external_command(args);
+            } 
+            else {
+                std::cout << _cmd << ": command not found" << std::endl;
+            }
+        }
+    }
+
+    return 0;
+}
