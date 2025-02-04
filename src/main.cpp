@@ -131,6 +131,13 @@ int main()
         }
       }
     }
+    else if(_cmd == "pwd"){
+      char cwd[1024];
+      if (getcwd(cwd, sizeof(cwd)) != NULL)
+        std::cout << cwd << std::endl;
+      else
+        perror("getcwd() error");
+    }
     else
     {
       // Check if it's an external command
