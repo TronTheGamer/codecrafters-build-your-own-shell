@@ -199,7 +199,7 @@ int main()
       }
       if (chdir(target.c_str()) != 0)
       {
-        perror("cd");
+        std::cerr<<"cd: "<<target<<": No such file or directory\n";
       }
     }
     else if (_cmd == "echo")
