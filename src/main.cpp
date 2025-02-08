@@ -9,7 +9,7 @@
 #include <cctype>     // For isspace()
 
 // List of built-in commands.
-std::vector<std::string> commands = {"echo", "exit", "type", "cd"};
+std::vector<std::string> commands = {"echo", "exit", "type", "cd", "pwd"};
 
 // ----------------------------------------------------------------------------
 // is_executable: Check if a file at 'path' exists and is executable.
