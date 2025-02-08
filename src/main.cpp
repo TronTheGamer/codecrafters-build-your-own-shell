@@ -170,6 +170,28 @@ int main()
           std::cerr << "cd: HOME not set\n";
           continue;
         }
+      }else if(args[1] =="~"){
+        char *home = getenv("HOME");
+        if (home)
+        {
+          target = home;
+        }
+        else
+        {
+          std::cerr << "cd: HOME not set\n";
+          continue;
+        }
+      } else if(args[1] == "-"){
+        char *oldpwd = getenv("OLDPWD");
+        if (oldpwd)
+        {
+          target = oldpwd;
+        }
+        else
+        {
+          std::cerr << "cd: OLDPWD not set\n";
+          continue;
+        }
       }
       else
       {
