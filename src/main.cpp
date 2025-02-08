@@ -156,4 +156,89 @@ int main() {
     // Tokenize the input with support for single and double quotes.
     std::vector<std::string> args = tokenize(input);
     if (args.empty())
-     
+      continue; // Ignore empty input lines.
+
+    // The first token is the command.
+    std::string _cmd = args[0];
+
+    // Handle built-in commands.
+    if (_cmd == "exit") {
+      break;
+    } else if (_cmd == "cd") {
+      std::string target;
+      if (args.size() < 2) {
+        // If no argument is provided, change to HOME directory.
+        char *home = getenv("HOME");
+        if (home) {
+          target = home;
+        } else {
+          std::cerr << "cd: HOME not set\n";
+          continue;
+        }
+      } else if (args[1] == "~") {
+        char *home = getenv("HOME");
+        if (home) {
+          target = home;
+        } else {
+          std::cerr << "cd: HOME not set\n";
+          continue;
+        }
+      } else if (args[1] == "-") {
+        char *oldpwd = getenv("OLDPWD");
+        if (oldpwd) {
+          target = oldpwd;
+        } else {
+          std::cerr << "cd: OLDPWD not set\n";
+          continue;
+        }
+      } else {
+        target = args[1];
+      }
+      if (chdir(target.c_str()) != 0) {
+        std::cerr << "cd: " << target << ": No such file or directory\n";
+      }
+    } else if (_cmd == "echo") {
+      // Print all arguments after "echo" with a space separator.
+      for (size_t i = 1; i < args.size(); ++i) {
+        std::cout << args[i] << " ";
+      }
+      std::cout << std::endl;
+    } else if (_cmd == "pwd") {
+      // Implement pwd: print the current working directory.
+      char buffer[1024];
+      if (getcwd(buffer, sizeof(buffer)) != nullptr) {
+        std::cout << buffer << std::endl;
+      } else {
+        perror("pwd");
+      }
+    } else if (_cmd == "type") {
+      // Process each argument after "type".
+      for (size_t i = 1; i < args.size(); ++i) {
+        const std::string &arg = args[i];
+        // Check for built-in commands first.
+        if (std::find(commands.begin(), commands.end(), arg) != commands.end()) {
+          std::cout << arg << " is a shell builtin" << std::endl;
+        } else {
+          std::string path = find_in_path(arg);
+          if (!path.empty()) {
+            std::cout << arg << " is " << path << std::endl;
+          } else {
+            std::cout << arg << ": not found" << std::endl;
+          }
+        }
+      }
+    } else {
+      // Handle external commands.
+      std::string path = find_in_path(_cmd);
+      if (!path.empty()) {
+        // Optionally, you can replace args[0] with the full path.
+        // args[0] = path;
+        execute_external_command(args);
+      } else {
+        std::cout << _cmd << ": command not found" << std::endl;
+      }
+    }
+  }
+
+  return 0;
+}
