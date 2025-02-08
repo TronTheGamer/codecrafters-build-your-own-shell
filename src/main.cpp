@@ -202,7 +202,7 @@ int main() {
       if (!path.empty()) {
         // Replace the command with its full path.
         // args[0] = path;
-        execute_external_command(args[0]);
+        execute_external_command(args);
       } else {
         std::cout << _cmd << ": command not found" << std::endl;
       }
