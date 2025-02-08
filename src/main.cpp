@@ -3,7 +3,7 @@
 #include <vector>
 #include <algorithm>  // For std::find
 #include <cstdlib>    // For getenv, exit
-#include <unistd.h>   // For fork(), execvp(), access(), chdir()
+#include <unistd.h>   // For fork(), execvp(), access(), chdir(), getcwd()
 #include <sys/wait.h> // For waitpid()
 #include <sys/stat.h> // For stat()
 #include <cctype>     // For isspace()
@@ -170,7 +170,9 @@ int main()
           std::cerr << "cd: HOME not set\n";
           continue;
         }
-      }else if(args[1] =="~"){
+      }
+      else if (args[1] == "~")
+      {
         char *home = getenv("HOME");
         if (home)
         {
@@ -181,7 +183,9 @@ int main()
           std::cerr << "cd: HOME not set\n";
           continue;
         }
-      } else if(args[1] == "-"){
+      }
+      else if (args[1] == "-")
+      {
         char *oldpwd = getenv("OLDPWD");
         if (oldpwd)
         {
@@ -199,7 +203,7 @@ int main()
       }
       if (chdir(target.c_str()) != 0)
       {
-        std::cerr<<"cd: "<<target<<": No such file or directory\n";
+        std::cerr << "cd: " << target << ": No such file or directory\n";
       }
     }
     else if (_cmd == "echo")
@@ -210,6 +214,19 @@ int main()
         std::cout << args[i] << " ";
       }
       std::cout << std::endl;
+    }
+    else if (_cmd == "pwd")
+    {
+      // Implement pwd: print the current working directory.
+      char buffer[1024];
+      if (getcwd(buffer, sizeof(buffer)) != nullptr)
+      {
+        std::cout << buffer << std::endl;
+      }
+      else
+      {
+        perror("pwd");
+      }
     }
     else if (_cmd == "type")
     {
