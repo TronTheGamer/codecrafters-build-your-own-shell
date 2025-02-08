@@ -2,14 +2,14 @@
 #include <sstream>
 #include <vector>
 #include <algorithm>  // For std::find
-#include <cstdlib>    // For getenv
-#include <unistd.h>   // For fork(), execvp(), access()
+#include <cstdlib>    // For getenv, exit
+#include <unistd.h>   // For fork(), execvp(), access(), chdir()
 #include <sys/wait.h> // For waitpid()
 #include <sys/stat.h> // For stat()
 #include <cctype>     // For isspace()
 
 // List of built-in commands.
-std::vector<std::string> commands = {"echo", "exit", "type"};
+std::vector<std::string> commands = {"echo", "exit", "type", "cd"};
 
 // ----------------------------------------------------------------------------
 // is_executable: Check if a file at 'path' exists and is executable.
@@ -153,6 +153,32 @@ int main()
     if (_cmd == "exit")
     {
       break;
+    }
+    else if (_cmd == "cd")
+    {
+      std::string target;
+      if (args.size() < 2)
+      {
+        // If no argument is provided, change to HOME directory.
+        char *home = getenv("HOME");
+        if (home)
+        {
+          target = home;
+        }
+        else
+        {
+          std::cerr << "cd: HOME not set\n";
+          continue;
+        }
+      }
+      else
+      {
+        target = args[1];
+      }
+      if (chdir(target.c_str()) != 0)
+      {
+        perror("cd");
+      }
     }
     else if (_cmd == "echo")
     {
